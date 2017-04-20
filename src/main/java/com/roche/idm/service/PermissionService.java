@@ -64,7 +64,6 @@ public class PermissionService {
 	}
 
 	public void apply(User user) {
-		//TODO save user to Roche AD
 		List<Group> allowable = getAllowableGroups();
 		List<Group> requested = user.getGroups().stream().filter(allowable::contains).collect(Collectors.toList());
 		List<Group> current = getUserDetail(user.getUsername()).getGroups();
@@ -81,6 +80,10 @@ public class PermissionService {
 					.removeMember(item.getName(), userRepository.getUserDistinguishedName(user.getUsername()));
 			logger.info("User : {} removed from Group {}.", user.getUsername(), item.getName());
 		});
+
+		if (!toBeAdded.isEmpty()) {
+			tryAddToFile(user);
+		}
 	}
 
 	public void remove(User user) {
@@ -98,5 +101,16 @@ public class PermissionService {
 		allowableGroups.add(new Group(QT_HOME));
 		allowableGroups.add(new Group(D2_TRAINED));
 		return allowableGroups;
+	}
+
+	private void tryAddToFile(User user) {
+		List<User> current = csvDataRepository.loadUsers();
+		if (current.contains(user)) {
+			return;
+		}
+		user.setGroups(new ArrayList<>());
+		current.add(user);
+		csvDataRepository.saveObjectList(User.class, current);
+		logger.info("Added user : {} to the file.", user.getUsername());
 	}
 }
