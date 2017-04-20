@@ -40,7 +40,7 @@ public class UserController {
 
 	@RequestMapping("apply")
 	public void apply(@RequestBody User user) {
-		//TODO add implementation
+		permissionService.apply(user);
 	}
 
 	@RequestMapping("remove")

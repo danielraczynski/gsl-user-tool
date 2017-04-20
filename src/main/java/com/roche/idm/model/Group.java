@@ -12,7 +12,7 @@ public class Group {
 	}
 
 	public String getName() {
-		return name;
+		return name.trim();
 	}
 
 	public void setName(String name) {
@@ -24,5 +24,20 @@ public class Group {
 		return "Group{" +
 				"name='" + name + '\'' +
 				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Group group = (Group) o;
+
+		return name != null ? name.equals(group.name) : group.name == null;
+	}
+
+	@Override
+	public int hashCode() {
+		return name != null ? name.hashCode() : 0;
 	}
 }

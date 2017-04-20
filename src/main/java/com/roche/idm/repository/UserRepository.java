@@ -94,6 +94,17 @@ public class UserRepository {
 		return result.get(0);
 	}
 
+	public String getUserDistinguishedName(String username) {
+		List<String> result = ldapTemplate.search(query().where(USERNAME).is(username), new AttributesMapper<String>() {
+			@Override
+			public String mapFromAttributes(Attributes attributes) throws NamingException {
+				Attribute distinguishedName = attributes.get(DISTINGUISHED_NAME);
+				return distinguishedName.get().toString();
+			}
+		});
+		return result.get(0);
+	}
+
 	private String appendWildcard(String keyword) {
 		StringBuilder sb = new StringBuilder(keyword);
 		sb.append("*");
