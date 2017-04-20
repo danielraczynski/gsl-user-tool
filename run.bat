@@ -1,0 +1,1 @@
+java -Dspring.profiles.active=prod -jar target\gsl-user-tool-0.0.1-SNAPSHOT.jar

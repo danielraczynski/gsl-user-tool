@@ -32,7 +32,7 @@ public class UserControllerTest {
 
 	@Test
 	public void getUser() throws Exception {
-		mockMvc.perform(get("/users/get?q=antczakm")).andDo(result -> {
+		mockMvc.perform(get("/users/get?q=raczynsd")).andDo(result -> {
 			String output = result.getResponse().getContentAsString();
 			logger.info(output);
 		}).andExpect(status().is(200));
@@ -40,7 +40,7 @@ public class UserControllerTest {
 
 	@Test
 	public void searchUsers() throws Exception {
-		mockMvc.perform(get("/users/search?q=ant")).andDo(result -> {
+		mockMvc.perform(get("/users/search?q=rac")).andDo(result -> {
 			String output = result.getResponse().getContentAsString();
 			logger.info(output);
 		}).andExpect(status().is(200));

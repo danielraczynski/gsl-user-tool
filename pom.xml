@@ -12,7 +12,6 @@
     <description>A tool for managing users in GSL partner system</description>
 
     <parent>
-        <!-- //TODO add Roche corporate master pom -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.5.2.RELEASE</version>
@@ -37,7 +36,6 @@
         </dependency>
 
         <dependency>
-            <!-- //TODO add devtools into production instance-->
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
