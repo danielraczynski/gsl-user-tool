@@ -23,6 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <cxf.version>3.1.6</cxf.version>
     </properties>
 
     <dependencies>
@@ -72,6 +73,17 @@
             <artifactId>guava</artifactId>
             <version>21.0</version>
         </dependency>
+        <!-- ADRS -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -82,14 +94,47 @@
                 <configuration>
                     <excludeDevtools>false</excludeDevtools>
                 </configuration>
-
+            </plugin>
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>${cxf.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <sourceRoot>${project.build.directory}/generated-sources/cxf</sourceRoot>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/adrs/ADRS_UsernameService.wsdl</wsdl>
+                                    <bindingFiles>
+                                        <bindingFile>${basedir}/src/main/resources/adrs/binding.xml</bindingFile>
+                                    </bindingFiles>
+                                    <extraargs>
+                                        <extraarg>-wsdlLocation</extraarg>
+                                        <extraarg>adrs/ADRS_UsernameService.wsdl</extraarg>
+                                        <extraarg>-verbose</extraarg>
+                                        <extraarg>-client</extraarg>
+                                        <extraarg>-compile</extraarg>
+                                        <extraarg>-autoNameResolution</extraarg>
+                                        <extraarg>-mark-generated</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
+                            </wsdlOptions>
+                        </configuration>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.0.1</version>
                 <executions>
                     <execution>
-                        <id>copy-resources</id>
+                        <id>copy-adrs-files</id>
                         <phase>process-sources</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -103,6 +148,21 @@
                                         <include>ADRS_UsernameService.wsdl</include>
                                         <include>AdFacadeConfig.xsd</include>
                                     </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-ui-files</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/public/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/web/</directory>
                                 </resource>
                             </resources>
                         </configuration>

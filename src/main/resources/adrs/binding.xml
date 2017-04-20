@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxws:bindings jxb:version="2.1"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" xmlns:s="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxws="http://java.sun.com/xml/ns/jaxws" wsdllocation="ADRS_UsernameService.wsdl">
+
+	<jaxws:schemabindings>
+		<jaxws:bindings node="wsdl:definitions">
+			<jxb:bindings node="wsdl:types">
+
+				<jxb:bindings node=".//s:element[@name='_category']">
+					<jxb:property name="oldCategory">
+					</jxb:property>
+				</jxb:bindings>
+
+				<jxb:bindings node=".//s:element[@name='_properties']">
+					<jxb:property name="oldProperties">
+					</jxb:property>
+				</jxb:bindings>
+
+				<jxb:bindings node=".//s:element[@name='_sid']">
+					<jxb:property name="oldSid">
+					</jxb:property>
+				</jxb:bindings>
+
+			</jxb:bindings>
+		</jaxws:bindings>
+
+	</jaxws:schemabindings>
+
+</jaxws:bindings>
