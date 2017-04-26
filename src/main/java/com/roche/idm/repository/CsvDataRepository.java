@@ -7,8 +7,10 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -22,26 +24,26 @@ import com.roche.idm.model.User;
 @Component
 public class CsvDataRepository {
 
-	private final String fileName = "users.txt";
+	@Autowired
+	private Resource usersFile;
 
 	private final Logger logger = LoggerFactory.getLogger(CsvDataRepository.class);
 
-	private <T> List<T> loadObjectList(Class<T> type, String fileName) {
+	private <T> List<T> loadObjectList(Class<T> type) {
 		try {
 			CsvSchema bootstrapSchema = CsvSchema.emptySchema().withHeader();
 			CsvMapper mapper = new CsvMapper();
-			File file;
-			file = new ClassPathResource(fileName).getFile();
-			MappingIterator<T> readValues = mapper.readerFor(type).with(bootstrapSchema).readValues(file);
+
+			MappingIterator<T> readValues = mapper.readerFor(type).with(bootstrapSchema).readValues(usersFile.getFile());
 			return readValues.readAll();
 		} catch (IOException e) {
-			logger.error("Error occurred while loading object list from file {}", fileName, e);
+			logger.error("Error occurred while loading object list from file");
 			return Collections.emptyList();
 		}
 	}
 
 	public List<User> loadUsers() {
-		return loadObjectList(User.class, fileName);
+		return loadObjectList(User.class);
 	}
 
 	/**
@@ -57,14 +59,14 @@ public class CsvDataRepository {
 					.build().withHeader();
 			CsvMapper mapper = new CsvMapper();
 			mapper.enable(JsonGenerator.Feature.IGNORE_UNKNOWN);
-			File file = new ClassPathResource(fileName).getFile();
-			SequenceWriter writer = mapper.writerFor(type).with(bootstrapSchema).writeValues(file);
+
+			SequenceWriter writer = mapper.writerFor(type).with(bootstrapSchema).writeValues(usersFile.getFile());
 			for (T t : list) {
 				writer.write(t);
 			}
 			writer.flush();
 		} catch (IOException e) {
-			logger.error("Cannot save to file {}", fileName, e);
+			logger.error("Cannot save to file", e);
 		}
 	}
 }
