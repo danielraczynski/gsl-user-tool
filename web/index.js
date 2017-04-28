@@ -20,6 +20,8 @@ const DOM = {
 	autocompleteList: $('.autocomplete__list'),
 	autocompleteWrapper: $('.autocomplete'),
 
+	disclaimer: $('.disclaimer'),
+
 	popup: $('.popup'),
 	popupWrapper: $('.popup__wrapper'),
 	popupHeader: $('.edit-header'),
@@ -33,6 +35,7 @@ const DOM = {
 	editCancelChanges: $('.js-cancel'),
 	closePopup: $('.js-close'),
 	refreshList: $('.js-refresh-list'),
+	help: $('.js-help'),
 };
 
 const TEMPLATES = {
@@ -319,12 +322,27 @@ const eventsHandlers = {
 			]
 		)
 			.then(UsersListModule.show);
+	},
+
+	showHelp: event=> {
+		event.stopPropagation();
+		DOM.disclaimer.classList.remove('hidden');
+
+		DOM.body.addEventListener('click', eventsHandlers.hideHelp);
+	},
+
+	hideHelp: event =>{
+		event.stopPropagation();
+		DOM.disclaimer.classList.add('hidden');
+
+		DOM.body.removeEventListener('click', eventsHandlers.hideHelp);
 	}
 
 };
 // bind initial events
 DOM.searchInput.addEventListener('keyup', debounce(eventsHandlers.autocompleteSearch, 300), true);
 DOM.refreshList.addEventListener('click', debounce(UsersListModule.show, 300), true);
+DOM.help.addEventListener('click', eventsHandlers.showHelp);
 
 // initial actions
 UsersListModule.show();
