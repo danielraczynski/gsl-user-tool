@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>GSL USER TOOL</title>
+    <title>IDM USER TOOL FOR GSL</title>
+	<link rel="stylesheet" type ="text/css" href="pure-min.css">
 	<link rel="stylesheet" type ="text/css" href="index.css">
 </head>
 <body>
-<h1 class="main-header">GSL USER TOOL</h1>
+<h1 class="main-header">IDM USER TOOL FOR GSL</h1>
 <div class="user-search-box">
 	<div class="user-search-box__label">Search for user</div>
-	<div class="user-search-box__autocomplete">
-		<input type="text" class="user-search-box__input js-search">
+	<div class="user-search-box__autocomplete pure-form">
+		<input type="text" class="user-search-box__input js-search" placeholder="">
 		<div class="autocomplete hidden">
 			<ul class="autocomplete__list">
 			</ul>
@@ -19,7 +20,7 @@
 </div>
 
 <div class="users-list">
-	<div class="users-list__header">GSL users with IDM permissions <button class="js-refresh-list">Refresh</button> </div>
+	<div class="users-list__header">GSL users with IDM permissions <button class="pure-button js-refresh-list">Refresh</button> </div>
 	<div class="users-list__list-wrapper">
 		<ul class="users-list__list">
 		</ul>
@@ -28,15 +29,18 @@
 
 <div class="popup hidden">
 	<div class="popup__wrapper">
-		<h2 class="edit-header">Editing user</h2>
-		<div class="edit-user-info"></div>
-		<h2 class="edit-header">IDM permissions</h2>
-		<div class="edit-user-groups">
-			<ul class="user__groups"></ul>
+		<span class="popup__close js-close">x</span>
+		<h2 class="edit-header">Adding user</h2>
+		<div class="popup__details">
+			<div class="edit-user-info"></div>
+			<h2 class="edit-header">IDM permissions</h2>
+			<div class="edit-user-groups">
+				<ul class="user__groups"></ul>
+			</div>
 		</div>
-		<div class="popup__buttons-wrapper">
-			<button class="popup__button js-apply">Apply</button>
-			<button class="popup__button js-cancel">Cancel</button>
+		<div class="popup__buttons-wrapper pure-button-group hidden">
+			<button class="popup__button pure-button js-apply">Add</button>
+			<button class="popup__button pure-button js-cancel">Cancel</button>
 		</div>
 	</div>
 </div>

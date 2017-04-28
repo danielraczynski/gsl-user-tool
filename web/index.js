@@ -22,13 +22,16 @@ const DOM = {
 
 	popup: $('.popup'),
 	popupWrapper: $('.popup__wrapper'),
+	popupHeader: $('.edit-header'),
 	editUserInfo: $('.edit-user-info'),
 	editUserGroups: $('.user__groups'),
+	popupButtonsWrapper: $('.popup__buttons-wrapper'),
 
 	// events hooks
 	searchInput: $('.js-search'),
 	editApplyChanges: $('.js-apply'),
 	editCancelChanges: $('.js-cancel'),
+	closePopup: $('.js-close'),
 	refreshList: $('.js-refresh-list'),
 };
 
@@ -36,10 +39,10 @@ const TEMPLATES = {
 	user: user => {
 		return `
 			<li class="users-list__element" data-username="${user.username}">
-				<div class="users-list__name">${user.username}</div>
-				<div class="users-list__buttons">
-					<button class="users-list__button js-edit" data-username="${user.username}">Edit</button>
-					<button class="users-list__button js-remove" data-username="${user.username}">Remove</button>
+				<div class="users-list__name">${user.firstName} ${user.lastName} (${user.username})</div>
+				<div class="users-list__buttons pure-button-group">
+					<button class="users-list__button pure-button js-edit" data-username="${user.username}">View</button>
+					<button class="users-list__button pure-button js-remove" data-username="${user.username}">Remove</button>
 				</div>
 			</li>
 		`;
@@ -47,7 +50,7 @@ const TEMPLATES = {
 
 	autocompleteItem: user => {
 		return `
-			<li class="autocomplete__item js-select-user">${user.firstName} ${user.lastName} (${user.username})</li>
+			<li class="autocomplete__item js-select-user" data-username="${user.username}">${user.firstName} ${user.lastName} (${user.username})</li>
 		`;
 	},
 
@@ -62,7 +65,7 @@ const TEMPLATES = {
 
 	userGroups: group => {
 		const checked = group.hasGroup ? ' checked="checked"' : '';
-		return `<li class="user__group"><input type="checkbox"${checked} value="${group.value}">${group.name}</li>`;
+		return `<li class="user__group"><input type="checkbox"${checked} value="${group.value}" disabled>${group.name}</li>`;
 	}
 };
 
@@ -70,7 +73,7 @@ const requestHandler = {
 	endpointPrefix: '/users/',
 
 	searchUser: (query) => {
-		return fetch(`${requestHandler.endpointPrefix}search/q=${query}`);
+		return fetch(`${requestHandler.endpointPrefix}search?q=${query}`);
 	},
 
 	loadUsers: () => {
@@ -116,12 +119,20 @@ const responseHandler = {
 const PopupModule = (() => {
 	let currentUser = null;
 
-	const show = (user) => {
+	const show = (options, user) => {
+		if (options && options.add) {
+			DOM.popupButtonsWrapper.classList.remove('hidden');
+			DOM.popupHeader.innerHTML = 'Add user';
+		} else {
+			DOM.popupButtonsWrapper.classList.add('hidden');
+			DOM.popupHeader.innerHTML = 'View user';
+		}
 		currentUser = user;
 		DOM.popup.classList.remove('hidden');
 		DOM.editApplyChanges.addEventListener('click', eventsHandlers.applyChanges, true);
 		DOM.editCancelChanges.addEventListener('click', eventsHandlers.cancelChanges, true);
-		DOM.popupWrapper.scrollTop =0;
+		DOM.closePopup.addEventListener('click', eventsHandlers.cancelChanges, true);
+		DOM.popupWrapper.scrollTop = 0;
 		return user;
 	};
 
@@ -130,6 +141,7 @@ const PopupModule = (() => {
 		DOM.popup.classList.add('hidden');
 		DOM.editApplyChanges.removeEventListener('click', eventsHandlers.applyChanges);
 		DOM.editCancelChanges.removeEventListener('click', eventsHandlers.cancelChanges);
+		DOM.closePopup.removeEventListener('click', eventsHandlers.cancelChanges);
 	};
 
 	const fillUserInfo = user => {
@@ -137,11 +149,12 @@ const PopupModule = (() => {
 		return user;
 	};
 
-	const fillUserGroups = user => {
+	const fillUserGroups = (options, user) => {
 		const groups = GROUPS.map(group => {
-			const hasGroup = !!user.groups.find(usergroup => {
+			const hasGroup = (options && options.add) ? true : !!user.groups.find(usergroup => {
 				return usergroup.name === group.value;
 			});
+
 			return Object.assign({}, group, {hasGroup});
 		});
 
@@ -267,9 +280,9 @@ const eventsHandlers = {
 	selectUserAutocomplete: event => {
 		requestHandler.getUser(event.target.dataset.username)
 			.then(responseHandler.toJSON)
-			.then(PopupModule.show)
+			.then(PopupModule.show.bind(null, {add: true}))
 			.then(PopupModule.fillUserInfo)
-			.then(PopupModule.fillUserGroups)
+			.then(PopupModule.fillUserGroups.bind(null, {add: true}))
 			.then(AutocompleteModule.hide);
 
 		DOM.searchInput.value = '';
@@ -286,13 +299,25 @@ const eventsHandlers = {
 	},
 
 	editUser: event => {
-		eventsHandlers.selectUserAutocomplete(event);
+		requestHandler.getUser(event.target.dataset.username)
+			.then(responseHandler.toJSON)
+			.then(PopupModule.show.bind(null, {add: false}))
+			.then(PopupModule.fillUserInfo)
+			.then(PopupModule.fillUserGroups.bind(null, {add: false}))
+			.then(AutocompleteModule.hide);
 	},
 
 	removeUser: event => {
-		requestHandler.removeUser({
-			username: event.target.dataset.username
-		})
+		Promise.all([
+			requestHandler.removeUser({
+				username: event.target.dataset.username,
+			}),
+			requestHandler.setUser({
+				username: event.target.dataset.username,
+				groups: [],
+			})
+			]
+		)
 			.then(UsersListModule.show);
 	}
 
