@@ -157,10 +157,28 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/public/</outputDirectory>
+                            <outputDirectory>${project.build.directory}/</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.basedir}/web/</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-users-file</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/</directory>
+                                    <includes>
+                                        <include>users.txt</include>
+                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>

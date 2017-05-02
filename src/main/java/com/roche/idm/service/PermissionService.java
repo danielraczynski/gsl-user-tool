@@ -80,13 +80,9 @@ public class PermissionService {
 					.removeMember(item.getName(), userRepository.getUserDistinguishedName(user.getUsername()));
 			logger.info("User : {} removed from Group {}.", user.getUsername(), item.getName());
 		});
-
-		if (!toBeAdded.isEmpty()) {
-			tryAddToFile(user);
-		}
 	}
 
-	public void remove(User user) {
+	public void tryRemove(User user) {
 		List<User> oldUsers = csvDataRepository.loadUsers();
 		Boolean wasRemoved = oldUsers.remove(user);
 		if (wasRemoved) {
@@ -103,7 +99,7 @@ public class PermissionService {
 		return allowableGroups;
 	}
 
-	private void tryAddToFile(User user) {
+	public void tryAddToFile(User user) {
 		List<User> current = csvDataRepository.loadUsers();
 		if (current.contains(user)) {
 			return;

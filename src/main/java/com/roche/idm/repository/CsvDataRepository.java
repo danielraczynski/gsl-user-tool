@@ -2,6 +2,7 @@ package com.roche.idm.repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,20 +52,26 @@ public class CsvDataRepository {
 	 */
 	public <T> void saveObjectList(Class<T> type, List<T> list) {
 		try {
-			CsvSchema bootstrapSchema = CsvSchema.builder()
-					.addColumn("firstName")
-					.addColumn("lastName")
-					.addColumn("username")
-					.addColumn("email")
-					.build().withHeader();
-			CsvMapper mapper = new CsvMapper();
-			mapper.enable(JsonGenerator.Feature.IGNORE_UNKNOWN);
+			if (list.isEmpty()) {
+				PrintWriter out = new PrintWriter(usersFile.getFile());
+				out.write("firstName,lastName,username,email\n");
+				out.flush();
+			} else {
+				CsvSchema bootstrapSchema = CsvSchema.builder()
+						.addColumn("firstName")
+						.addColumn("lastName")
+						.addColumn("username")
+						.addColumn("email")
+						.build().withHeader();
+				CsvMapper mapper = new CsvMapper();
+				mapper.enable(JsonGenerator.Feature.IGNORE_UNKNOWN);
 
-			SequenceWriter writer = mapper.writerFor(type).with(bootstrapSchema).writeValues(usersFile.getFile());
-			for (T t : list) {
-				writer.write(t);
+				SequenceWriter writer = mapper.writerFor(type).with(bootstrapSchema).writeValues(usersFile.getFile());
+				for (T t : list) {
+					writer.write(t);
+				}
+				writer.flush();
 			}
-			writer.flush();
 		} catch (IOException e) {
 			logger.error("Cannot save to file", e);
 		}

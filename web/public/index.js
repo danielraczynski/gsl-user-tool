@@ -314,10 +314,6 @@ const eventsHandlers = {
 		Promise.all([
 			requestHandler.removeUser({
 				username: event.target.dataset.username,
-			}),
-			requestHandler.setUser({
-				username: event.target.dataset.username,
-				groups: [],
 			})
 			]
 		)

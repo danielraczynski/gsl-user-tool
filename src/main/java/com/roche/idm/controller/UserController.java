@@ -1,6 +1,7 @@
 package com.roche.idm.controller;
 
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,13 @@ public class UserController {
 	@RequestMapping("apply")
 	public void apply(@RequestBody User user) {
 		permissionService.apply(user);
+		permissionService.tryAddToFile(user);
 	}
 
 	@RequestMapping("remove")
 	public void remove(@RequestBody User user) {
-		permissionService.remove(user);
+		user.setGroups(Collections.emptyList());
+		permissionService.apply(user);
+		permissionService.tryRemove(user);
 	}
 }
