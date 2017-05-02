@@ -1,6 +1,7 @@
 package com.roche.idm.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -106,6 +107,7 @@ public class PermissionService {
 		}
 		user.setGroups(new ArrayList<>());
 		current.add(user);
+		Collections.sort(current);
 		csvDataRepository.saveObjectList(User.class, current);
 		logger.info("Added user : {} to the file.", user.getUsername());
 	}

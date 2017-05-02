@@ -9,6 +9,11 @@ html, body {
     padding: 10px;
 }
 
+body {
+    width: 40%;
+    margin: auto;
+}
+
 .main-header {
     margin-top: 0;
     float: left
@@ -43,12 +48,13 @@ html, body {
 }
 
 .users-list__list-wrapper {
-    max-height: 300px;
+    max-height: 600px;
+    width: 500px;
     overflow: auto;
 }
 
 .users-list__list {
-    width: 500px;
+    width: auto;
     list-style: none;
     margin: 10px 0 0 0;
     padding: 0;
