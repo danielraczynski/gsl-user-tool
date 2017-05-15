@@ -11,6 +11,14 @@ const GROUPS = [
 		name: 'D2 Trained',
 		value: 'CN=GLOIDM_APPS_NP_D2_TRAINED,OU=Applications,OU=Groups,DC=nala,DC=roche,DC=com',
 	},
+	{
+		name: 'GPRSA_USER',
+		value: 'CN=GLOREGAINFO_QA_GPRSA_USER,OU=Applications,OU=Groups,DC=emea,DC=roche,DC=com',
+	},
+	{
+		name: 'HQ_TRACKING',
+		value: 'CN=GLOREGAINFO_QA_HQ_TRACKING,OU=Applications,OU=Groups,DC=emea,DC=roche,DC=com',
+	},
 ];
 
 const DOM = {
@@ -320,14 +328,14 @@ const eventsHandlers = {
 			.then(UsersListModule.show);
 	},
 
-	showHelp: event=> {
+	showHelp: event => {
 		event.stopPropagation();
 		DOM.disclaimer.classList.remove('hidden');
 
 		DOM.body.addEventListener('click', eventsHandlers.hideHelp);
 	},
 
-	hideHelp: event =>{
+	hideHelp: event => {
 		event.stopPropagation();
 		DOM.disclaimer.classList.add('hidden');
 
