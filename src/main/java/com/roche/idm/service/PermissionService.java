@@ -25,9 +25,13 @@ public class PermissionService {
 	private UserRepository userRepository;
 	private AdrsServiceSoap adrsServiceSoap;
 
+	//GSL Groups
 	private String INTERNAL = "CN=GLOIDM_APPS_NP_USERS_INTERNAL,OU=Applications,OU=Groups,DC=nala,DC=roche,DC=com";
 	private String QT_HOME = "CN=GLOIDM_APPS_NP_UDOM_QT_HOME,OU=Applications,OU=Groups,DC=nala,DC=roche,DC=com";
 	private String D2_TRAINED = "CN=GLOIDM_APPS_NP_D2_TRAINED,OU=Applications,OU=Groups,DC=nala,DC=roche,DC=com";
+	//GPRS Groups
+	private String GPRSA_USER = "CN=GLOREGAINFO_QA_GPRSA_USER,OU=Applications,OU=Groups,DC=emea,DC=roche,DC=com";
+	private String QA_HQ_TRACKING = "CN=GLOREGAINFO_QA_HQ_TRACKING,OU=Applications,OU=Groups,DC=emea,DC=roche,DC=com";
 
 	@Autowired
 	public PermissionService(CsvDataRepository csvDataRepository, UserRepository userRepository, AdrsServiceSoap adrsServiceSoap) {
@@ -41,6 +45,8 @@ public class PermissionService {
 		Group internal = new Group(INTERNAL);
 		Group qt = new Group(QT_HOME);
 		Group trained = new Group(D2_TRAINED);
+		Group gprsaUser = new Group(GPRSA_USER);
+		Group qaGprsa = new Group(QA_HQ_TRACKING);
 		if (userRepository.hasGroup(result, internal)) {
 			result.getGroups().add(internal);
 		}
@@ -49,6 +55,12 @@ public class PermissionService {
 		}
 		if (userRepository.hasGroup(result, trained)) {
 			result.getGroups().add(trained);
+		}
+		if (userRepository.hasGroup(result, gprsaUser)) {
+			result.getGroups().add(gprsaUser);
+		}
+		if (userRepository.hasGroup(result, qaGprsa)) {
+			result.getGroups().add(qaGprsa);
 		}
 		return result;
 	}
@@ -97,6 +109,8 @@ public class PermissionService {
 		allowableGroups.add(new Group(INTERNAL));
 		allowableGroups.add(new Group(QT_HOME));
 		allowableGroups.add(new Group(D2_TRAINED));
+		allowableGroups.add(new Group(GPRSA_USER));
+		allowableGroups.add(new Group(QA_HQ_TRACKING));
 		return allowableGroups;
 	}
 
